@@ -8,9 +8,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import br.edu.ifspsaocarlos.agenda.data.ContatoDAORealm;
 import br.edu.ifspsaocarlos.agenda.model.Contato;
 import br.edu.ifspsaocarlos.agenda.R;
+import io.realm.Realm;
 
 
 public class DetalheActivity extends AppCompatActivity {
@@ -27,7 +31,7 @@ public class DetalheActivity extends AppCompatActivity {
 
         if (getIntent().hasExtra("contato"))
         {
-            this.c = (Contato) getIntent().getSerializableExtra("contato");
+            this.c = (Contato) getIntent().getParcelableExtra("contato");
             EditText nameText = (EditText)findViewById(R.id.editText1);
             nameText.setText(c.getNome());
             EditText foneText = (EditText)findViewById(R.id.editText2);
@@ -43,7 +47,7 @@ public class DetalheActivity extends AppCompatActivity {
                 pos=c.getNome().length();
             setTitle(c.getNome().substring(0,pos));
         }
-        cDAO = new ContatoDAORealm();
+        cDAO = new ContatoDAORealm(Realm.getDefaultInstance());
     }
 
     @Override
@@ -89,7 +93,12 @@ public class DetalheActivity extends AppCompatActivity {
         String dataAniversario = ((EditText) findViewById(R.id.et_aniversario)).getText().toString();
         if (c==null)
         {
+            Date dNow = new Date();
+            SimpleDateFormat ft = new SimpleDateFormat("yyMMddhhmmssMs");
+            Long id = Long.parseLong(ft.format(dNow));
+
             c = new Contato();
+            c.setId(id);
             c.setNome(name);
             c.setFone(fone);
             c.setEmail(email);

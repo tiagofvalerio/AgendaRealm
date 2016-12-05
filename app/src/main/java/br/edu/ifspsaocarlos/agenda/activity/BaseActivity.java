@@ -20,7 +20,11 @@ import br.edu.ifspsaocarlos.agenda.adapter.ContatoAdapter;
 import br.edu.ifspsaocarlos.agenda.data.ContatoDAORealm;
 import br.edu.ifspsaocarlos.agenda.model.Contato;
 import br.edu.ifspsaocarlos.agenda.R;
+import io.realm.OrderedRealmCollection;
+import io.realm.Realm;
+import io.realm.RealmList;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +33,7 @@ public class BaseActivity extends AppCompatActivity {
     protected ContatoDAORealm cDAO ;
     private RecyclerView recyclerView;
 
-    protected List<Contato> contatos = new ArrayList<Contato>();
+    protected OrderedRealmCollection<Contato> contatos = new RealmList<>();
     private SearchView searchView;
 
     private ContatoAdapter adapter;
@@ -41,7 +45,7 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        cDAO= new ContatoDAORealm();
+        cDAO= new ContatoDAORealm(Realm.getDefaultInstance());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -103,7 +107,7 @@ public class BaseActivity extends AppCompatActivity {
 
         contatos = cDAO.buscaContato(nomeContato);
 
-        adapter = new ContatoAdapter(contatos, this);
+        adapter = new ContatoAdapter(this, contatos);
         recyclerView.setAdapter(adapter);
 
 
@@ -129,7 +133,6 @@ public class BaseActivity extends AppCompatActivity {
                 if (swipeDir == ItemTouchHelper.RIGHT) {
                     Contato contato = contatos.get(viewHolder.getAdapterPosition());
                     cDAO.apagaContato(contato);
-                    contatos.remove(viewHolder.getAdapterPosition());
                     recyclerView.getAdapter().notifyDataSetChanged();
 
                     showSnackBar("Contato removido");

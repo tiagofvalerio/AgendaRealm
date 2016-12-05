@@ -1,13 +1,16 @@
 package br.edu.ifspsaocarlos.agenda.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class Contato extends RealmObject implements Serializable{
+public class Contato extends RealmObject implements Parcelable {
 
-    private static final long serialVersionUID = 1L;
+//    private static final long serialVersionUID = 1L;
 
     @PrimaryKey
     private long id;
@@ -18,8 +21,16 @@ public class Contato extends RealmObject implements Serializable{
     private String foneAdicional;
     private String dataAniversario;
 
-    public Contato()
-    {
+    public Contato() {
+    }
+
+    public Contato(Parcel parcel) {
+        this.id = parcel.readLong();
+        this.nome = parcel.readString();
+        this.fone = parcel.readString();
+        this.email = parcel.readString();
+        this.foneAdicional = parcel.readString();
+        this.dataAniversario = parcel.readString();
     }
 
     public long getId() {
@@ -58,5 +69,30 @@ public class Contato extends RealmObject implements Serializable{
     public void setDataAniversario(String dataAniversario) {
         this.dataAniversario = dataAniversario;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeLong(id);
+        parcel.writeString(nome);
+        parcel.writeString(fone);
+        parcel.writeString(email);
+        parcel.writeString(foneAdicional);
+        parcel.writeString(dataAniversario);
+    }
+
+    public static final Parcelable.Creator<Contato> CREATOR = new Parcelable.Creator<Contato>(){
+        public Contato createFromParcel(Parcel in){
+            return new Contato(in);
+        }
+
+        public Contato[] newArray(int size){
+            return new Contato[size];
+        }
+    };
 }
 

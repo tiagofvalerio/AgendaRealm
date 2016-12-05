@@ -9,21 +9,19 @@ import android.widget.TextView;
 
 import br.edu.ifspsaocarlos.agenda.model.Contato;
 import br.edu.ifspsaocarlos.agenda.R;
+import io.realm.OrderedRealmCollection;
+import io.realm.RealmRecyclerViewAdapter;
 
 import java.util.List;
 
 
-public class ContatoAdapter extends RecyclerView.Adapter<ContatoAdapter.ContatoViewHolder> {
-
-    private List<Contato> contatos;
-    private Context context;
+public class ContatoAdapter extends RealmRecyclerViewAdapter<Contato, ContatoAdapter.ContatoViewHolder> {
 
     private static ItemClickListener clickListener;
 
 
-    public ContatoAdapter(List<Contato> contatos, Context context) {
-        this.contatos = contatos;
-        this.context = context;
+    public ContatoAdapter(Context context, OrderedRealmCollection<Contato> data) {
+        super(context, data, true);
     }
 
     @Override
@@ -35,14 +33,14 @@ public class ContatoAdapter extends RecyclerView.Adapter<ContatoAdapter.ContatoV
 
     @Override
     public void onBindViewHolder(ContatoViewHolder holder, int position) {
-        Contato contato  = contatos.get(position) ;
+        Contato contato  = getData().get(position) ;
         holder.nome.setText(contato.getNome());
         holder.telefone.setText(contato.getFone());
     }
 
     @Override
     public int getItemCount() {
-        return contatos.size();
+        return getData().size();
     }
 
 
@@ -74,7 +72,6 @@ public class ContatoAdapter extends RecyclerView.Adapter<ContatoAdapter.ContatoV
     public interface ItemClickListener {
         void onItemClick(View view, int position);
     }
-
 }
 
 
